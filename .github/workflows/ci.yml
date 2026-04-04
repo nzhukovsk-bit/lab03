@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-linux-gcc:
+    runs-on: ubuntu-latest
+    name: Linux (gcc)
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_CXX_COMPILER=g++
+      
+      - name: Build
+        run: cmake --build build
+      
+      - name: Run hello_world
+        run: ./build/hello_world
+      
+      - name: Run solver
+        run: ./build/solver
+
+  build-linux-clang:
+    runs-on: ubuntu-latest
+    name: Linux (clang)
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install clang
+        run: sudo apt-get update && sudo apt-get install -y clang
+      
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_CXX_COMPILER=clang++
+      
+      - name: Build
+        run: cmake --build build
+      
+      - name: Run hello_world
+        run: ./build/hello_world
+      
+      - name: Run solver
+        run: ./build/solver
+
+  build-windows:
+    runs-on: windows-latest
+    name: Windows (MSVC)
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Configure CMake
+        run: cmake -B build
+      
+      - name: Build
+        run: cmake --build build --config Release
+      
+      - name: Run hello_world
+        run: ./build/Release/hello_world.exe
+      
+      - name: Run solver
+        run: ./build/Release/solver.exe
