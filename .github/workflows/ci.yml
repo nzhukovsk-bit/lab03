@@ -1,5 +1,8 @@
 name: CI
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   push:
     branches: [ main ]
@@ -27,7 +30,7 @@ jobs:
             install_cmd: sudo apt-get update && sudo apt-get install -y clang
           
           - os: windows-latest
-            compiler: cl.exe
+            compiler: msvc
             name: Windows (MSVC)
             build_dir: build/Release
             exe_suffix: .exe
@@ -52,10 +55,28 @@ jobs:
         shell: bash
       
       - name: Build
-        run: cmake --build build ${{ runner.os == 'Windows' && '--config Release' || '' }}
+        run: |
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            cmake --build build --config Release
+          else
+            cmake --build build
+          fi
+        shell: bash
       
       - name: Run hello_world
-        run: ./${{ matrix.build_dir }}/hello_world${{ matrix.exe_suffix }}
+        run: |
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            ./build/Release/hello_world${{ matrix.exe_suffix }}
+          else
+            ./${{ matrix.build_dir }}/hello_world${{ matrix.exe_suffix }}
+          fi
+        shell: bash
       
       - name: Run solver
-        run: ./${{ matrix.build_dir }}/solver${{ matrix.exe_suffix }}
+        run: |
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            ./build/Release/solver${{ matrix.exe_suffix }}
+          else
+            ./${{ matrix.build_dir }}/solver${{ matrix.exe_suffix }}
+          fi
+        shell: bash
