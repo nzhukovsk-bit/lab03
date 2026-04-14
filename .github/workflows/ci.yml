@@ -16,23 +16,17 @@ jobs:
         include:
           - os: ubuntu-latest
             compiler: g++
-            compiler_c: gcc
             name: Linux (gcc)
-            build_dir: build
             exe_suffix: ""
           
           - os: ubuntu-latest
             compiler: clang++
-            compiler_c: clang
             name: Linux (clang)
-            build_dir: build
             exe_suffix: ""
             install_cmd: sudo apt-get update && sudo apt-get install -y clang
           
           - os: windows-latest
-            compiler: msvc
             name: Windows (MSVC)
-            build_dir: build/Release
             exe_suffix: .exe
 
     runs-on: ${{ matrix.os }}
@@ -63,20 +57,27 @@ jobs:
           fi
         shell: bash
       
+      - name: Set executable permissions (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          chmod +x build/hello_world/hello_world
+          chmod +x build/solver/solver
+        shell: bash
+      
       - name: Run hello_world
         run: |
           if [ "${{ runner.os }}" = "Windows" ]; then
-            ./build/Release/hello_world${{ matrix.exe_suffix }}
+            ./build/hello_world/Release/hello_world${{ matrix.exe_suffix }}
           else
-            ./${{ matrix.build_dir }}/hello_world${{ matrix.exe_suffix }}
+            ./build/hello_world/hello_world${{ matrix.exe_suffix }}
           fi
         shell: bash
       
       - name: Run solver
         run: |
           if [ "${{ runner.os }}" = "Windows" ]; then
-            ./build/Release/solver${{ matrix.exe_suffix }}
+            echo "1 -3 2" | ./build/solver/Release/solver${{ matrix.exe_suffix }}
           else
-            ./${{ matrix.build_dir }}/solver${{ matrix.exe_suffix }}
+            echo "1 -3 2" | ./build/solver/solver${{ matrix.exe_suffix }}
           fi
         shell: bash
