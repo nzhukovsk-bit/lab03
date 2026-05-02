@@ -11,12 +11,6 @@ target_link_libraries(solver
     solver_lib
 )
 
-# Добавляем пути к заголовочным файлам
-target_include_directories(solver PRIVATE
-    ${CMAKE_SOURCE_DIR}/formatter_ex_lib
-    ${CMAKE_SOURCE_DIR}/solver_lib
-)
-
 set_target_properties(solver PROPERTIES
     CXX_STANDARD 11
     CXX_STANDARD_REQUIRED ON
