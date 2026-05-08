@@ -3,13 +3,13 @@ name: Create Release and Packages
 on:
   push:
     tags:
-      - 'v*'   # Запускается при push тега, например, v1.0.0
+      - 'v*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # Нужно, чтобы скрипт мог создать релиз на GitHub
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,7 +27,7 @@ jobs:
           cpack --config CPackConfig.cmake
 
       - name: Create Release and Upload Assets
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2  # Обновлено с v1 на v2
         with:
           files: |
             build/*.deb
